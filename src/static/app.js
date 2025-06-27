@@ -26,11 +26,18 @@ document.addEventListener("DOMContentLoaded", () => {
           <p><strong>Schedule:</strong> ${details.schedule}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
           <div>
-            <span class="participants-title">Participants:</span>
+            <span class="participants-title">Participantes:</span>
             ${
               details.participants.length > 0
-                ? `<ul class="participants-list">${details.participants.map(p => `<li>${p}</li>`).join("")}</ul>`
-                : "<em>No participants yet</em>"
+                ? `<ul class="participants-list">${
+                    details.participants
+                      .map(
+                        p =>
+                          `<li><span class="participant-avatar">${getInitials(p)}</span>${p}</li>`
+                      )
+                      .join("")
+                  }</ul>`
+                : "<em>Nenhum participante ainda</em>"
             }
           </div>
         `;
@@ -88,6 +95,24 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error signing up:", error);
     }
   });
+
+  // Função auxiliar para extrair as iniciais do participante
+  function getInitials(nameOrEmail) {
+    // Se for email, pega as duas primeiras letras antes do @
+    if (nameOrEmail.includes("@")) {
+      return nameOrEmail
+        .split("@")[0]
+        .split(/[.\-_]/)
+        .map(part => part[0])
+        .join("")
+        .substring(0, 2)
+        .toUpperCase();
+    }
+    // Se for nome, pega as iniciais
+    const parts = nameOrEmail.trim().split(" ");
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
 
   // Initialize app
   fetchActivities();
